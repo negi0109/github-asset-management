@@ -1,8 +1,10 @@
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
+import useLocalStorage from '../hooks/useLocalStorage'
 
 export default function Home() {
+  const [githubToken, setGithubToken] = useLocalStorage("github-token");
   const hash = useRouter().asPath.split('#')[1] ?? ''
 
   return (
@@ -12,7 +14,8 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        {hash}
+        <p>{hash}</p>
+        <p>token: {githubToken}</p>
       </main>
 
       <footer className={styles.footer}>
