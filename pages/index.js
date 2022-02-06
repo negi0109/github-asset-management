@@ -1,7 +1,10 @@
+import { useRouter } from 'next/router'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 
 export default function Home() {
+  const hash = useRouter().asPath.split('#')[1] ?? ''
+
   return (
     <div className={styles.container}>
       <Head>
@@ -9,6 +12,7 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
+        {hash}
       </main>
 
       <footer className={styles.footer}>
