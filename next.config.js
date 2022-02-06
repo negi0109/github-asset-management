@@ -1,4 +1,6 @@
+const isProduction = process.env.NODE_ENV == "production"
+
 module.exports = {
   reactStrictMode: true,
-  basePath: "/github-asset-management",
+  basePath: isProduction ? "/github-asset-management" : null,
 }
