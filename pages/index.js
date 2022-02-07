@@ -37,7 +37,7 @@ function Home() {
           {
             repos.map(repo => (
               <div key={repo.id} className={styles.repo}>
-                <div>{repo.full_name}</div>
+                <a href={`https://github.com/${repo.full_name}`}>{repo.full_name}</a>
               </div>
             ))
           }
