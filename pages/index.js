@@ -1,11 +1,29 @@
+
+import { useEffect, useState } from "react"
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import useLocalStorage from '../hooks/useLocalStorage'
+import { login } from '../libs/github'
 
-export default function Home() {
+function Home() {
+  const [username, setUserName] = useState("");
   const [githubToken, setGithubToken] = useLocalStorage("github-token");
+  const [repos, setRepos] = useState([]);
+  const [user, setUser] = useState([]);
   const hash = useRouter().asPath.split('#')[1] ?? ''
+
+  useEffect(() => {
+    return (async() => {
+      if(githubToken == null) return;
+
+      const data = await login(githubToken)
+      console.log(data)
+
+      setRepos(data.repos)
+      setUser(data.user)
+    })();
+  }, [githubToken])
 
   return (
     <div className={styles.container}>
@@ -15,7 +33,16 @@ export default function Home() {
 
       <main className={styles.main}>
         <p>{hash}</p>
-        <p>token: {githubToken}</p>
+        <div className={styles.repos}>
+          {
+            repos.map(repo => (
+              <div key={repo.id} className={styles.repo}>
+                <div>{repo.full_name}</div>
+              </div>
+            ))
+          }
+        </div>
+        {/* <p>token: {githubToken}</p> */}
       </main>
 
       <footer className={styles.footer}>
@@ -24,7 +51,7 @@ export default function Home() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{' '}
+          Powered by negi0109
           <span className={styles.logo}>
           </span>
         </a>
@@ -32,3 +59,5 @@ export default function Home() {
     </div>
   )
 }
+
+export default Home;
