@@ -11,11 +11,21 @@ export async function login(token) {
     var repos = await octokit.rest.repos.listForAuthenticatedUser({ sort: "updated" })
 
     return {
-        repos: repos.data,
-        user: user
+        repos: repos,
+        user: user,
     };
 }
 
 export function isLogined() {
     return logined;
+}
+
+export async function getFiles(user, repo, path) {
+    const files = await octokit.rest.repos.getContent({
+        owner: user,
+        repo: repo,
+        path: path
+    })
+
+    return files;
 }

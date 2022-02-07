@@ -1,29 +1,39 @@
 
 import { useEffect, useState } from "react"
-import { useRouter } from 'next/router'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import useLocalStorage from '../hooks/useLocalStorage'
-import { login } from '../libs/github'
+import useHash from '../hooks/useHash'
+import { getFiles, login } from '../libs/github'
 
 function Home() {
-  const [username, setUserName] = useState("");
-  const [githubToken, setGithubToken] = useLocalStorage("github-token");
-  const [repos, setRepos] = useState([]);
-  const [user, setUser] = useState([]);
-  const hash = useRouter().asPath.split('#')[1] ?? ''
+  const [username, setUserName] = useState("")
+  const [githubToken, setGithubToken] = useLocalStorage("github-token")
+  const [repos, setRepos] = useState([])
+  const [user, setUser] = useState([])
+  const [hash, sethash] = useHash()
 
   useEffect(() => {
     return (async() => {
       if(githubToken == null) return;
 
       const data = await login(githubToken)
-      console.log(data)
 
-      setRepos(data.repos)
-      setUser(data.user)
+      setRepos(data.repos.data)
+      setUser(data.user.data)
     })();
   }, [githubToken])
+
+  useEffect(() => {
+    return (async() => {
+      if (hash == null) return;
+      if (hash == "") return;
+
+      const [user, repo] = hash.split("/")
+      var files = await getFiles(user, repo)
+      console.log(files)
+    })();
+  }, [githubToken, hash])
 
   return (
     <div className={styles.container}>
@@ -37,7 +47,8 @@ function Home() {
           {
             repos.map(repo => (
               <div key={repo.id} className={styles.repo}>
-                <a href={`https://github.com/${repo.full_name}`}>{repo.full_name}</a>
+                <a href={`#${repo.full_name}`} onClick={() => sethash(repo.full_name)}>{repo.full_name}</a>
+                <a href={`https://github.com/${repo.full_name}`}></a>
               </div>
             ))
           }
