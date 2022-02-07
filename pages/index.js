@@ -4,7 +4,7 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import useLocalStorage from '../hooks/useLocalStorage'
 import useHash from '../hooks/useHash'
-import { getFiles, login } from '../libs/github'
+import { getFile, getFiles, login } from '../libs/github'
 
 function Home() {
   const [username, setUserName] = useState("")
@@ -12,6 +12,7 @@ function Home() {
   const [repos, setRepos] = useState([])
   const [user, setUser] = useState([])
   const [hash, sethash] = useHash()
+  const [setting, setSetting] = useState({ paths: [""], tags: [] })
 
   useEffect(() => {
     return (async() => {
@@ -30,8 +31,15 @@ function Home() {
       if (hash == "") return;
 
       const [user, repo] = hash.split("/")
-      var files = await getFiles(user, repo)
-      console.log(files)
+
+      try {
+        var file = await getFile(user, repo, ".asset-management.json")
+        var setting = JSON.parse(Buffer.from(file.content, 'base64').toString())
+
+        setSetting(setting)
+      } catch(error) {
+        setSetting({ paths: [""], tags: [] })
+      }
     })();
   }, [githubToken, hash])
 

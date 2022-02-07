@@ -20,6 +20,16 @@ export function isLogined() {
     return logined;
 }
 
+export async function getFile(user, repo, path) {
+    const file = await octokit.rest.repos.getContent({
+        owner: user,
+        repo: repo,
+        path: path
+    })
+
+    return file.data;
+}
+
 export async function getFiles(user, repo, path) {
     const files = await octokit.rest.repos.getContent({
         owner: user,
