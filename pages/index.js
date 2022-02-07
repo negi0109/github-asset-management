@@ -4,7 +4,7 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import useLocalStorage from '../hooks/useLocalStorage'
 import useHash from '../hooks/useHash'
-import { getFile, getFiles, login } from '../libs/github'
+import { getFile, getFiles, login, getBlob } from '../libs/github'
 
 function Home() {
   const [username, setUserName] = useState("")
@@ -32,14 +32,19 @@ function Home() {
 
       const [user, repo] = hash.split("/")
 
+      var setting = { paths: [""], tags: [] }
+
       try {
         var file = await getFile(user, repo, ".asset-management.json")
-        var setting = JSON.parse(Buffer.from(file.content, 'base64').toString())
-
-        setSetting(setting)
+        var blob = await getBlob(user, repo, file.sha)
+        setting = JSON.parse(Buffer.from(blob.data.content, blob.data.encoding).toString())
       } catch(error) {
-        setSetting({ paths: [""], tags: [] })
+        console.log("no setting blob")
+        console.error(error)
       }
+
+      console.log("load setting", setting)
+      setSetting(setting)
     })();
   }, [githubToken, hash])
 

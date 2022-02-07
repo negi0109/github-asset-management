@@ -30,6 +30,16 @@ export async function getFile(user, repo, path) {
     return file.data;
 }
 
+export async function getBlob(user, repo, sha) {
+    const blob = await octokit.rest.git.getBlob({
+        owner: user,
+        repo: repo,
+        file_sha: sha
+    })
+
+    return blob;
+}
+
 export async function getFiles(user, repo, path) {
     const files = await octokit.rest.repos.getContent({
         owner: user,
