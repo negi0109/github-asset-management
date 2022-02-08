@@ -115,7 +115,7 @@ function Home() {
             ))
           }
         </div>) : null}
-        <ImageList variant="masonry" cols={3} gap={4}>
+        <ImageList variant="masonry" cols={6} gap={4}>
         {
           files.filter(v => /.*\.png/.test(v.name)).map(v => (
             <ImageListItem key={v.name}>
