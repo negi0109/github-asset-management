@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 
 import React, { Fragment, useEffect, useState } from "react"
 import Head from 'next/head'
@@ -9,6 +10,7 @@ import { ImageList, ImageListItem, ImageListItemBar, Drawer, AppBar, Toolbar, Ic
 import MenuIcon from "@mui/icons-material/Menu"
 
 function Home() {
+  const [_, forceUpdate] = useState({})
   const [username, setUserName] = useState("")
   const [githubToken, setGithubToken] = useLocalStorage("github-token")
   const [repos, setRepos] = useState([])
@@ -17,6 +19,7 @@ function Home() {
   const [setting, setSetting] = useState({ paths: [""], tags: [] })
   const [files, setFiles] = useState([])
   const [sidebar, toggleSideBar] = useState(false)
+  const [blobs, setBlobs] = useState({})
 
   useEffect(() => {
     return (async() => {
@@ -52,8 +55,19 @@ function Home() {
 
       try {
         var response = await getFiles(user, repo, "")
-        console.log(response.data)
         setFiles(response.data)
+        Promise.all(
+          response.data.map(async (v) => {
+            if (v.type != "file") return
+            if (!/.*\.png/.test(v.name)) return
+
+            if (blobs[v.sha] == undefined) {
+              blobs[v.sha] = await getBlob(user, repo, v.sha);
+              setBlobs(blobs)
+              forceUpdate({})
+            }
+          })
+        )
       } catch(error) {
         console.log("no files")
         console.error(error)
@@ -107,7 +121,8 @@ function Home() {
             <ImageListItem key={v.name}>
               <img
                 width="100%"
-                src={v.download_url}
+                src={`data:image/png;base64,${blobs[v.sha]?.data?.content}`}
+                alt={v.name}
               />
               <ImageListItemBar
                 title={v.name}
