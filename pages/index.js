@@ -1,11 +1,12 @@
 
-import { useEffect, useState } from "react"
+import React, { Fragment, useEffect, useState } from "react"
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import useLocalStorage from '../hooks/useLocalStorage'
 import useHash from '../hooks/useHash'
 import { getFile, getFiles, login, getBlob } from '../libs/github'
-import { ImageList, ImageListItem,ImageListItemBar, IconButton } from "@material-ui/core"
+import { ImageList, ImageListItem, ImageListItemBar, Drawer, AppBar, Toolbar, IconButton } from "@material-ui/core"
+import MenuIcon from "@mui/icons-material/Menu"
 
 function Home() {
   const [username, setUserName] = useState("")
@@ -15,6 +16,7 @@ function Home() {
   const [hash, sethash] = useHash()
   const [setting, setSetting] = useState({ paths: [""], tags: [] })
   const [files, setFiles] = useState([])
+  const [sidebar, toggleSideBar] = useState(false)
 
   useEffect(() => {
     return (async() => {
@@ -49,7 +51,7 @@ function Home() {
       setSetting(setting)
 
       try {
-        var response = await getFiles(user, repo, ".")
+        var response = await getFiles(user, repo, "")
         console.log(response.data)
         setFiles(response.data)
       } catch(error) {
@@ -65,8 +67,29 @@ function Home() {
       <Head>
         <title>Github Asset Management</title>
       </Head>
+      <Toolbar>
+      <IconButton
+        onClick={() => toggleSideBar(true)}
+      >
+        <MenuIcon />
+      </IconButton>
+      </Toolbar>
 
       <main className={styles.main}>
+        <Drawer
+          anchor="left"
+          open={sidebar}
+          onClose={() => toggleSideBar(false)}
+        >
+          {
+            repos.map(repo => (
+              <div key={repo.id} className={styles.repo}>
+                <a href={`#${repo.full_name}`} onClick={() => sethash(repo.full_name)}>{repo.full_name}</a>
+                <a href={`https://github.com/${repo.full_name}`}></a>
+              </div>
+            ))
+          }
+        </Drawer>
         <p>{hash}</p>
         {hash == "" ? (<div className={styles.repos}>
           {
