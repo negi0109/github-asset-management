@@ -5,6 +5,7 @@ import styles from '../styles/Home.module.css'
 import useLocalStorage from '../hooks/useLocalStorage'
 import useHash from '../hooks/useHash'
 import { getFile, getFiles, login, getBlob } from '../libs/github'
+import { ImageList, ImageListItem,ImageListItemBar, IconButton } from "@material-ui/core"
 
 function Home() {
   const [username, setUserName] = useState("")
@@ -13,6 +14,7 @@ function Home() {
   const [user, setUser] = useState([])
   const [hash, sethash] = useHash()
   const [setting, setSetting] = useState({ paths: [""], tags: [] })
+  const [files, setFiles] = useState([])
 
   useEffect(() => {
     return (async() => {
@@ -45,6 +47,16 @@ function Home() {
 
       console.log("load setting", setting)
       setSetting(setting)
+
+      try {
+        var response = await getFiles(user, repo, ".")
+        console.log(response.data)
+        setFiles(response.data)
+      } catch(error) {
+        console.log("no files")
+        console.error(error)
+        setFiles([])
+      }
     })();
   }, [githubToken, hash])
 
@@ -56,7 +68,7 @@ function Home() {
 
       <main className={styles.main}>
         <p>{hash}</p>
-        <div className={styles.repos}>
+        {hash == "" ? (<div className={styles.repos}>
           {
             repos.map(repo => (
               <div key={repo.id} className={styles.repo}>
@@ -65,8 +77,22 @@ function Home() {
               </div>
             ))
           }
-        </div>
-        {/* <p>token: {githubToken}</p> */}
+        </div>) : null}
+        <ImageList variant="masonry" cols={3} gap={4}>
+        {
+          files.filter(v => /.*\.png/.test(v.name)).map(v => (
+            <ImageListItem key={v.name}>
+              <img
+                width="100%"
+                src={v.download_url}
+              />
+              <ImageListItemBar
+                title={v.name}
+              />
+            </ImageListItem>
+          ))
+        }
+        </ImageList>
       </main>
 
       <footer className={styles.footer}>
