@@ -45,7 +45,10 @@ function Home() {
       try {
         var file = await getFile(user, repo, ".asset-management.json")
         var blob = await getBlob(user, repo, file.sha)
-        setting = JSON.parse(Buffer.from(blob.data.content, blob.data.encoding).toString())
+        setting = Object.assign(
+          setting,
+          JSON.parse(Buffer.from(blob.data.content, blob.data.encoding).toString())
+        )
       } catch(error) {
         console.log("no setting blob")
         console.error(error)
