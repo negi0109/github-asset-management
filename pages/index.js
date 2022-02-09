@@ -99,7 +99,7 @@ function Home() {
   }, [githubToken, hash])
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} pixelated`}>
       <Head>
         <title>Github Asset Management</title>
       </Head>

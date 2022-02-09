@@ -13,6 +13,7 @@ export default function PreviewDialog({ opened, file, onClose, blobs, setting })
           width="66.66666%"
           src={`data:image/png;base64,${blobs[file[setting.prevs[0]]?.sha]?.data?.content}`}
           alt={file.name}
+          className="pixelated"
         />
         <Grid container item flexDirection="column" xs={4}>
           <CardContent>
