@@ -164,7 +164,7 @@ function Home() {
               }}
             >
               <img
-                src={`data:image/png;base64,${blobs[v[1][setting.prevs[0]].sha]?.data?.content}`}
+                src={`data:image/png;base64,${blobs[v[1][setting.prevs[0]]?.sha]?.data?.content}`}
                 alt={v[0]}
               />
               <ImageListItemBar
