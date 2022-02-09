@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-
+import path from "path"
 import React, { Fragment, useEffect, useState } from "react"
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
@@ -15,9 +15,10 @@ function Home() {
   const [githubToken, setGithubToken] = useLocalStorage("github-token")
   const [repos, setRepos] = useState([])
   const [user, setUser] = useState([])
-  const [hash, sethash] = useHash()
+  const [hash, setHash] = useHash()
   const [setting, setSetting] = useState({ paths: [""], tags: [] })
   const [files, setFiles] = useState([])
+  const [fileHash, setFileHash] = useState({})
   const [sidebar, toggleSideBar] = useState(false)
   const [blobs, setBlobs] = useState({})
 
@@ -54,8 +55,22 @@ function Home() {
       setSetting(setting)
 
       try {
+        var fileHash = {}
         var response = await getFiles(user, repo, "")
+
         setFiles(response.data)
+
+        response.data.forEach(v => {
+          const ext = path.extname(v.name)
+          const name = path.basename(v.name, ext)
+
+          if (![".png"].includes(ext)) return
+
+          fileHash[name] ??= { name: v.name }
+          fileHash[name][ext] = v
+        })
+        setFileHash(fileHash)
+
         Promise.all(
           response.data.map(async (v) => {
             if (v.type != "file") return
@@ -82,11 +97,12 @@ function Home() {
         <title>Github Asset Management</title>
       </Head>
       <Toolbar>
-      <IconButton
-        onClick={() => toggleSideBar(true)}
-      >
-        <MenuIcon />
-      </IconButton>
+        <IconButton
+          onClick={() => toggleSideBar(true)}
+        >
+          <MenuIcon />
+        </IconButton>
+        <p>{ hash }</p>
       </Toolbar>
 
       <main className={styles.main}>
@@ -98,7 +114,12 @@ function Home() {
           {
             repos.map(repo => (
               <div key={repo.id} className={styles.repo}>
-                <a href={`#${repo.full_name}`} onClick={() => sethash(repo.full_name)}>{repo.full_name}</a>
+                <a
+                  href={`#${repo.full_name}`}
+                  onClick={() => { setHash(repo.full_name); toggleSideBar(false) } }
+                >
+                  {repo.full_name}
+                </a>
                 <a href={`https://github.com/${repo.full_name}`}></a>
               </div>
             ))
@@ -109,23 +130,24 @@ function Home() {
           {
             repos.map(repo => (
               <div key={repo.id} className={styles.repo}>
-                <a href={`#${repo.full_name}`} onClick={() => sethash(repo.full_name)}>{repo.full_name}</a>
+                <a href={`#${repo.full_name}`} onClick={() => setHash(repo.full_name)}>{repo.full_name}</a>
                 <a href={`https://github.com/${repo.full_name}`}></a>
               </div>
             ))
           }
         </div>) : null}
+
         <ImageList variant="masonry" cols={6} gap={4}>
         {
-          files.filter(v => /.*\.png/.test(v.name)).map(v => (
-            <ImageListItem key={v.name}>
+          Object.entries(fileHash).map(v => (
+            <ImageListItem key={v[0]}>
               <img
                 width="100%"
-                src={`data:image/png;base64,${blobs[v.sha]?.data?.content}`}
-                alt={v.name}
+                src={`data:image/png;base64,${blobs[v[1][".png"].sha]?.data?.content}`}
+                alt={v[0]}
               />
               <ImageListItemBar
-                title={v.name}
+                title={v[0]}
               />
             </ImageListItem>
           ))
