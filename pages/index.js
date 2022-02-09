@@ -16,7 +16,7 @@ function Home() {
   const [repos, setRepos] = useState([])
   const [user, setUser] = useState([])
   const [hash, setHash] = useHash()
-  const [setting, setSetting] = useState({ paths: [""], tags: [] })
+  const [setting, setSetting] = useState({ paths: [""], tags: [], prevs: ["png"], origin: "png" })
   const [files, setFiles] = useState([])
   const [fileHash, setFileHash] = useState({})
   const [sidebar, toggleSideBar] = useState(false)
@@ -40,7 +40,7 @@ function Home() {
 
       const [user, repo] = hash.split("/")
 
-      var setting = { paths: [""], tags: [] }
+      var setting = { paths: [""], tags: [], prevs: ["png"], origin: "png" }
 
       try {
         var file = await getFile(user, repo, ".asset-management.json")
@@ -65,12 +65,13 @@ function Home() {
 
         response.data.forEach(v => {
           const ext = path.extname(v.name)
+          const ex = ext.substring(1)
           const name = path.basename(v.name, ext)
 
-          if (![".png"].includes(ext)) return
+          if (![setting.origin, ...setting.prevs].includes(ex)) return
 
-          fileHash[name] ??= { name: v.name }
-          fileHash[name][ext] = v
+          fileHash[name] ??= { name: name }
+          fileHash[name][ex] = v
         })
         setFileHash(fileHash)
 
@@ -145,8 +146,7 @@ function Home() {
           Object.entries(fileHash).map(v => (
             <ImageListItem key={v[0]}>
               <img
-                width="100%"
-                src={`data:image/png;base64,${blobs[v[1][".png"].sha]?.data?.content}`}
+                src={`data:image/png;base64,${blobs[v[1][setting.prevs[0]].sha]?.data?.content}`}
                 alt={v[0]}
               />
               <ImageListItemBar
