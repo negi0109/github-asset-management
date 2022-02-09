@@ -7,8 +7,10 @@ import useLocalStorage from '../hooks/useLocalStorage'
 import useHash from '../hooks/useHash'
 import { getFile, getFiles, login, getBlob } from '../libs/github'
 import { ImageList, ImageListItem, ImageListItemBar, Drawer, AppBar, Toolbar, IconButton } from "@material-ui/core"
-import PreviewDialog from "../components/PreviewDialog"
 import MenuIcon from "@mui/icons-material/Menu"
+import PreviewDialog from "../components/PreviewDialog"
+import SettingForm from "../components/SettingForm"
+
 
 function Home() {
   const [_, forceUpdate] = useState({})
@@ -17,7 +19,7 @@ function Home() {
   const [repos, setRepos] = useState([])
   const [user, setUser] = useState([])
   const [hash, setHash] = useHash()
-  const [setting, setSetting] = useState({ paths: [""], tags: [], prevs: ["png"], origin: "png" })
+  const [setting, setSetting] = useState({ paths: [""], tags: [], prevs: ["png"], origin: "png", column: 6 })
   const [files, setFiles] = useState([])
   const [fileHash, setFileHash] = useState({})
   const [sidebar, toggleSideBar] = useState(false)
@@ -43,7 +45,7 @@ function Home() {
 
       const [user, repo] = hash.split("/")
 
-      var setting = { paths: [""], tags: [], prevs: ["png"], origin: "png" }
+      var setting = { paths: [""], tags: [], prevs: ["png"], origin: "png", column: 6 }
 
       try {
         var file = await getFile(user, repo, ".asset-management.json")
@@ -150,7 +152,7 @@ function Home() {
             ))
           }
         </Drawer>
-        <p>{hash}</p>
+
         {hash == "" ? (<div className={styles.repos}>
           {
             repos.map(repo => (
@@ -162,7 +164,11 @@ function Home() {
           }
         </div>) : null}
 
-        <ImageList variant="masonry" cols={6} gap={4}>
+        <SettingForm
+          setting={setting}
+          setSetting={setSetting}
+        />
+        <ImageList variant="masonry" cols={setting.column} gap={4}>
         {
           Object.values(fileHash).map(v => (
             <ImageListItem
