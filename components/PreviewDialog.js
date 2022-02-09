@@ -11,7 +11,7 @@ export default function PreviewDialog({ opened, file, onClose, blobs, setting })
       <Grid container>
         <img
           width="66.66666%"
-          src={`data:image/png;base64,${blobs[file[setting.prevs[0]]?.sha]?.data?.content}`}
+          src={`data:image/${file.prev};base64,${blobs[file[file.prev]?.sha]?.data?.content}`}
           alt={file.name}
           className="pixelated"
         />

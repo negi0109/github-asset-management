@@ -76,12 +76,22 @@ function Home() {
           fileHash[name] ??= { name: name }
           fileHash[name][ex] = v
         })
+
+        Object.values(fileHash).forEach(v => {
+          setting.prevs.some(ext => {
+            if (v[ext] != null) {
+              v.prev = ext
+              true
+            }
+          })
+        })
+
         setFileHash(fileHash)
 
         Promise.all(
           response.data.map(async (v) => {
             if (v.type != "file") return
-            if (!/.*\.png/.test(v.name)) return
+            if (![setting.origin, ...setting.prevs].includes(path.extname(v.name).substring(1))) return
 
             if (blobs[v.sha] == undefined) {
               blobs[v.sha] = await getBlob(user, repo, v.sha);
@@ -154,21 +164,21 @@ function Home() {
 
         <ImageList variant="masonry" cols={6} gap={4}>
         {
-          Object.entries(fileHash).map(v => (
+          Object.values(fileHash).map(v => (
             <ImageListItem
-              key={v[0]}
+              key={v.name}
               onClick={() => {
                 togglePreview(true)
-                setPreviewFile(v[1])
+                setPreviewFile(v)
                 forceUpdate()
               }}
             >
               <img
-                src={`data:image/png;base64,${blobs[v[1][setting.prevs[0]]?.sha]?.data?.content}`}
-                alt={v[0]}
+                src={`data:image/${v.prev};base64,${blobs[v[v.prev]?.sha]?.data?.content}`}
+                alt={v.name}
               />
               <ImageListItemBar
-                title={v[0]}
+                title={v.name}
               />
             </ImageListItem>
           ))
