@@ -7,6 +7,7 @@ import useLocalStorage from '../hooks/useLocalStorage'
 import useHash from '../hooks/useHash'
 import { getFile, getFiles, login, getBlob } from '../libs/github'
 import { ImageList, ImageListItem, ImageListItemBar, Drawer, AppBar, Toolbar, IconButton } from "@material-ui/core"
+import PreviewDialog from "../components/PreviewDialog"
 import MenuIcon from "@mui/icons-material/Menu"
 
 function Home() {
@@ -21,6 +22,8 @@ function Home() {
   const [fileHash, setFileHash] = useState({})
   const [sidebar, toggleSideBar] = useState(false)
   const [blobs, setBlobs] = useState({})
+  const [previewFile, setPreviewFile] = useState({})
+  const [displayPreview, togglePreview] = useState(false)
 
   useEffect(() => {
     return (async() => {
@@ -110,6 +113,14 @@ function Home() {
       </Toolbar>
 
       <main className={styles.main}>
+        <PreviewDialog
+          opened={displayPreview}
+          file={previewFile}
+          onClose={() => togglePreview(false)}
+          blobs={blobs}
+          setting={setting}
+        />
+
         <Drawer
           anchor="left"
           open={sidebar}
@@ -144,7 +155,14 @@ function Home() {
         <ImageList variant="masonry" cols={6} gap={4}>
         {
           Object.entries(fileHash).map(v => (
-            <ImageListItem key={v[0]}>
+            <ImageListItem
+              key={v[0]}
+              onClick={() => {
+                togglePreview(true)
+                setPreviewFile(v[1])
+                forceUpdate()
+              }}
+            >
               <img
                 src={`data:image/png;base64,${blobs[v[1][setting.prevs[0]].sha]?.data?.content}`}
                 alt={v[0]}
