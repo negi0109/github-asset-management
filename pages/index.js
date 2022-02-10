@@ -19,7 +19,7 @@ function Home() {
   const [repos, setRepos] = useState([])
   const [user, setUser] = useState([])
   const [hash, setHash] = useHash()
-  const [setting, setSetting] = useState({ paths: [""], tags: [], prevs: ["png"], origin: "png", column: 6 })
+  const [setting, setSetting] = useState({ paths: [""], tags: [], prevs: ["png"], origin: "png", column: 6, pixelated: true })
   const [files, setFiles] = useState([])
   const [fileHash, setFileHash] = useState({})
   const [sidebar, toggleSideBar] = useState(false)
@@ -45,7 +45,7 @@ function Home() {
 
       const [user, repo] = hash.split("/")
 
-      var setting = { paths: [""], tags: [], prevs: ["png"], origin: "png", column: 6 }
+      var setting = { paths: [""], tags: [], prevs: ["png"], origin: "png", column: 6, pixelated: true }
 
       try {
         var file = await getFile(user, repo, ".asset-management.json")
@@ -111,7 +111,7 @@ function Home() {
   }, [githubToken, hash])
 
   return (
-    <div className={`${styles.container} pixelated`}>
+    <div className={`${styles.container} ${setting.pixelated ? "pixelated" : ""}`}>
       <Head>
         <title>Github Asset Management</title>
       </Head>
