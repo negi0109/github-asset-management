@@ -10,7 +10,7 @@ import { ImageList, ImageListItem, ImageListItemBar, Drawer, AppBar, Toolbar, Ic
 import MenuIcon from "@mui/icons-material/Menu"
 import PreviewDialog from "../components/PreviewDialog"
 import SettingForm from "../components/SettingForm"
-import { DEFAULT_SETTING } from "../libs/Setting"
+import { DEFAULT_SETTING, importSetting } from "../libs/Setting"
 
 
 function Home() {
@@ -46,16 +46,16 @@ function Home() {
 
       const [user, repo] = hash.split("/")
 
-      var setting = DEFAULT_SETTING()
+      var setting
 
       try {
         var file = await getFile(user, repo, ".asset-management.json")
         var blob = await getBlob(user, repo, file.sha)
-        setting = Object.assign(
-          setting,
+        setting = importSetting(
           JSON.parse(Buffer.from(blob.data.content, blob.data.encoding).toString())
         )
       } catch(error) {
+        setting = DEFAULT_SETTING()
         console.log("no setting blob")
         console.error(error)
       }
