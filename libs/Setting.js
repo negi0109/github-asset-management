@@ -14,3 +14,7 @@ export function importSetting(hash) {
     hash,
   )
 }
+
+export function exportSetting(hash) {
+  return hash
+}

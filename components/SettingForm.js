@@ -1,6 +1,10 @@
+import React, { useState } from "react"
+import { exportSetting } from "../libs/Setting"
 import { FormGroup, FormControl, FormLabel, FormControlLabel, Slider, Container, Checkbox, Item } from "@material-ui/core"
 
 export default function SettingForm({ setting, setSetting }) {
+  const [previewSetting, togglePreviewSetting] = useState(false)
+
   return (
     <Container>
       <FormGroup>
@@ -32,6 +36,26 @@ export default function SettingForm({ setting, setSetting }) {
           }
           label="pixelated"/>
       </FormGroup>
+      <FormGroup>
+        <FormControlLabel
+          control={
+            <Checkbox
+              defaultChecked
+              value={previewSetting}
+              onChange={(_, v) => {
+                togglePreviewSetting(v)
+              }}
+            />
+          }
+          label="export setting"/>
+      </FormGroup>
+      {
+        previewSetting ? (
+          <pre>
+            {JSON.stringify(exportSetting(setting), null, "\t")}
+          </pre>
+        ) : null
+      }
     </Container>
   )
 }
