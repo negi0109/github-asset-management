@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { exportSetting } from "../libs/Setting"
-import { FormGroup, FormControl, FormLabel, FormControlLabel, Slider, Container, Checkbox, Item } from "@material-ui/core"
+import { FormGroup, FormControl, FormLabel, FormControlLabel, Slider, Container, Checkbox, Grid } from "@material-ui/core"
 
 export default function SettingForm({ setting, setSetting }) {
   const [previewSetting, togglePreviewSetting] = useState(false)
@@ -23,32 +23,38 @@ export default function SettingForm({ setting, setSetting }) {
           />
         </FormControl>
       </FormGroup>
-      <FormGroup>
-        <FormControlLabel
-          control={
-            <Checkbox
-              defaultChecked
-              value={setting.pixelated}
-              onChange={(_, v) => {
-                setSetting({ ...setting, pixelated: v })
-              }}
-            />
-          }
-          label="pixelated"/>
-      </FormGroup>
-      <FormGroup>
-        <FormControlLabel
-          control={
-            <Checkbox
-              defaultChecked
-              value={previewSetting}
-              onChange={(_, v) => {
-                togglePreviewSetting(v)
-              }}
-            />
-          }
-          label="export setting"/>
-      </FormGroup>
+      <Grid container spacing={2}>
+        <Grid item xs={3}>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  defaultChecked
+                  value={setting.pixelated}
+                  onChange={(_, v) => {
+                    setSetting({ ...setting, pixelated: v })
+                  }}
+                />
+              }
+              label="pixelated"/>
+          </FormGroup>
+        </Grid>
+        <Grid item xs={3}>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  defaultChecked
+                  value={previewSetting}
+                  onChange={(_, v) => {
+                    togglePreviewSetting(v)
+                  }}
+                />
+              }
+              label="export setting"/>
+          </FormGroup>
+        </Grid>
+      </Grid>
       {
         previewSetting ? (
           <pre>
