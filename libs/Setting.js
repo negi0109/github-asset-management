@@ -1,6 +1,7 @@
 export const DEFAULT_SETTING = () => ({
   paths: [""],
-  tags: [],
+  tags: {},
+  tagRelations: {},
   prevs:
   ["png"],
   origin: "png",

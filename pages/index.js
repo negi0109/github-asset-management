@@ -130,6 +130,7 @@ function Home() {
           opened={displayPreview}
           file={previewFile}
           onClose={() => togglePreview(false)}
+          forceUpdate={() => forceUpdate({})}
           blobs={blobs}
           setting={setting}
         />
