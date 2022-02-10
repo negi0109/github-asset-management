@@ -10,6 +10,7 @@ import { ImageList, ImageListItem, ImageListItemBar, Drawer, AppBar, Toolbar, Ic
 import MenuIcon from "@mui/icons-material/Menu"
 import PreviewDialog from "../components/PreviewDialog"
 import SettingForm from "../components/SettingForm"
+import { DEFAULT_SETTING } from "../libs/Setting"
 
 
 function Home() {
@@ -19,7 +20,7 @@ function Home() {
   const [repos, setRepos] = useState([])
   const [user, setUser] = useState([])
   const [hash, setHash] = useHash()
-  const [setting, setSetting] = useState({ paths: [""], tags: [], prevs: ["png"], origin: "png", column: 6, pixelated: true })
+  const [setting, setSetting] = useState(DEFAULT_SETTING())
   const [files, setFiles] = useState([])
   const [fileHash, setFileHash] = useState({})
   const [sidebar, toggleSideBar] = useState(false)
@@ -45,7 +46,7 @@ function Home() {
 
       const [user, repo] = hash.split("/")
 
-      var setting = { paths: [""], tags: [], prevs: ["png"], origin: "png", column: 6, pixelated: true }
+      var setting = DEFAULT_SETTING()
 
       try {
         var file = await getFile(user, repo, ".asset-management.json")
