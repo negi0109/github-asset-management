@@ -1,6 +1,7 @@
 import React from "react"
 import AddIcon from "@mui/icons-material/Add"
 import { FormControl, Grid, Dialog, Container, TextField, Button, InputLabel, Select, MenuItem } from "@material-ui/core"
+import TagPicker from "../components/TagPicker"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { ICONS } from "../libs/icon"
 import _ from "lodash"
@@ -31,7 +32,13 @@ export default function PreviewDialog({ opened, file, onClose, blobs, setting, f
                     setting.tagRelations[file.name].map(id => (
                       <>
                         <Grid key={id} item xs={2}>
-                          <FontAwesomeIcon icon={setting.tags[id].icon} />
+                          <TagPicker
+                            value={setting.tags[id].icon}
+                            onChange={v => {
+                              setting.tags[id].icon = v
+                              forceUpdate({})
+                            }}
+                          />
                         </Grid>
                         <Grid key={id} item xs={10}>
                           <TextField
