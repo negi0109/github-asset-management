@@ -181,7 +181,7 @@ function Home() {
               { setting.tagRelations[v.name]?.length > 0 ?
                 (<div className={styles.icons}>
                   { setting.tagRelations[v.name].map(v => (
-                    <FontAwesomeIcon key={v.name} icon={setting.tags[v].icon}/>
+                    <FontAwesomeIcon key={v} icon={setting.tags[v].icon}/>
                   )) }
                 </div>) : null
               }
