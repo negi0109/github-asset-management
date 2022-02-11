@@ -3,6 +3,7 @@ import AddIcon from "@mui/icons-material/Add"
 import { FormControl, Grid, Dialog, Container, TextField, Button, InputLabel, Select, MenuItem } from "@material-ui/core"
 import TagPicker from "../components/TagPicker"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import CloseIcon from "@mui/icons-material/Close"
 import { ICONS } from "../libs/icon"
 import _ from "lodash"
 
@@ -40,12 +41,20 @@ export default function PreviewDialog({ opened, file, onClose, blobs, setting, f
                             }}
                           />
                         </Grid>
-                        <Grid key={id} item xs={10}>
+                        <Grid key={id} item xs={9}>
                           <TextField
                             type="text"
                             value={setting.tags[id].name}
                             onChange={event => {
                               setting.tags[id].name = event.target.value
+                              forceUpdate({})
+                            }}
+                          />
+                        </Grid>
+                        <Grid key={id} item xs={1}>
+                          <CloseIcon
+                            onClick={() => {
+                              _.remove(setting.tagRelations[file.name], v => v == id)
                               forceUpdate({})
                             }}
                           />
