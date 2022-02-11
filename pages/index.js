@@ -68,14 +68,15 @@ function Home() {
         var response = await getFiles(user, repo, "")
 
         response.data.forEach(v => {
+          if (v.type != "file") return
+
           const ext = path.extname(v.name)
           const ex = ext.substring(1)
           const name = path.basename(v.name, ext)
 
-          if (![setting.origin, ...setting.prevs].includes(ex)) return
-
-          fileHash[name] ??= { name: name }
+          fileHash[name] ??= { name: name, exts: [] }
           fileHash[name][ex] = v
+          fileHash[name].exts = fileHash[name].exts.concat(ex)
         })
 
         Object.values(fileHash).forEach(v => {
@@ -169,7 +170,9 @@ function Home() {
         />
         <ImageList variant="masonry" cols={setting.column} gap={4}>
         {
-          Object.values(fileHash).map(v => (
+          Object.values(fileHash).filter(
+            v => v.exts.includes(setting.origin)
+          ).map(v => (
             <ImageListItem
               key={v.name}
               onClick={() => {
