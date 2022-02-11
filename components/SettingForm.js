@@ -1,26 +1,28 @@
 import React, { useState } from "react"
 import { exportSetting } from "../libs/Setting"
-import { FormControl, FormLabel, FormControlLabel, Slider, Container, Checkbox, Grid } from "@material-ui/core"
+import { FormGroup, FormControl, FormLabel, FormControlLabel, Slider, Container, Checkbox, Grid } from "@material-ui/core"
 
 export default function SettingForm({ setting, setSetting }) {
   const [previewSetting, togglePreviewSetting] = useState(false)
 
   return (
     <Container>
-      <FormControl variant="standard">
-        <FormLabel id="preview-columns">preview columns</FormLabel>
-        <Slider
-          id="preview-columns"
-          value={setting.column}
-          step={1}
-          min={1}
-          max={10}
-          marks
-          onChange={(_, v) => {
-            setSetting({ ...setting, column: v })
-          }}
-        />
-      </FormControl>
+      <FormGroup>
+        <FormControl variant="standard">
+          <FormLabel id="preview-columns">preview columns</FormLabel>
+          <Slider
+            id="preview-columns"
+            value={setting.column}
+            step={1}
+            min={1}
+            max={10}
+            marks
+            onChange={(_, v) => {
+              setSetting({ ...setting, column: v })
+            }}
+          />
+        </FormControl>
+      </FormGroup>
       <Grid container spacing={2}>
         <Grid item xs={3}>
           <FormControlLabel
