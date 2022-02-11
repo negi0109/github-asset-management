@@ -21,7 +21,6 @@ function Home() {
   const [user, setUser] = useState([])
   const [hash, setHash] = useHash()
   const [setting, setSetting] = useState(DEFAULT_SETTING())
-  const [files, setFiles] = useState([])
   const [fileHash, setFileHash] = useState({})
   const [sidebar, toggleSideBar] = useState(false)
   const [blobs, setBlobs] = useState({})
@@ -67,8 +66,6 @@ function Home() {
         var fileHash = {}
         var response = await getFiles(user, repo, "")
 
-        setFiles(response.data)
-
         response.data.forEach(v => {
           const ext = path.extname(v.name)
           const ex = ext.substring(1)
@@ -106,7 +103,6 @@ function Home() {
       } catch(error) {
         console.log("no files")
         console.error(error)
-        setFiles([])
       }
     })();
   }, [githubToken, hash])
