@@ -1,3 +1,5 @@
+import _ from "lodash"
+
 export const DEFAULT_SETTING = () => ({
   paths: [""],
   prevs:
@@ -18,5 +20,11 @@ export function importSetting(hash) {
 }
 
 export function exportSetting(hash) {
-  return hash
+  const tmp = _.cloneDeep(hash)
+  const usedTags = _.uniq(_.flatten(Object.values(tmp.tagRelations)))
+  Object.keys(tmp.tags).forEach(key => {
+    if (!usedTags.includes(key)) delete tmp.tags[key]
+  })
+
+  return tmp
 }
