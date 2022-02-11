@@ -1,5 +1,5 @@
 import AddIcon from "@mui/icons-material/Add"
-import { Grid, Dialog, Container, TextField, Button } from "@material-ui/core"
+import { FormControl, Grid, Dialog, Container, TextField, Button, InputLabel, Select, MenuItem } from "@material-ui/core"
 
 export default function PreviewDialog({ opened, file, onClose, blobs, setting, forceUpdate }) {
   return (
@@ -63,6 +63,36 @@ export default function PreviewDialog({ opened, file, onClose, blobs, setting, f
                 }
               </Grid>
             </Grid>
+            <FormControl fullWidth>
+              <InputLabel id="new-tag">tag</InputLabel>
+              <Select
+                labelId="new-tag"
+                value=""
+                label="tag"
+                onChange={ (event) => {
+                  const value = event.target.value
+                  if (setting.tags[value] === undefined) return
+                  if (setting?.tagRelations?.[file.name]?.includes(value)) return
+
+
+                  if (setting.tagRelations[file.name] === undefined)
+                    setting.tagRelations[file.name] = []
+
+                  setting.tagRelations[file.name] = setting.tagRelations[file.name].concat(value)
+
+                  forceUpdate({})
+                } }
+              >
+                {
+                  setting.tags !== undefined ?
+                  (
+                    Object.keys(setting.tags).filter(v => !setting?.tagRelations?.[file.name]?.includes(v)).map(id => (
+                      <MenuItem value={id} key={id}>{setting.tags[id].name}</MenuItem>
+                    ))
+                  ) : null
+                }
+              </Select>
+            </FormControl>
           </Container>
         </Grid>
       </Grid>
