@@ -1,6 +1,6 @@
 import React, { Fragment } from "react"
 import AddIcon from "@mui/icons-material/Add"
-import { FormControl, Grid, Dialog, Container, TextField, Button, InputLabel, Select, MenuItem } from "@material-ui/core"
+import { Link, FormControl, Grid, Dialog, Container, TextField, Button, InputLabel, Select, MenuItem } from "@material-ui/core"
 import IconPicker from "./IconPicker"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import CloseIcon from "@mui/icons-material/Close"
@@ -25,6 +25,19 @@ export default function PreviewDialog({ opened, file, onClose, blobs, setting, f
         <Grid container item direction="column" xs={4}>
           <Container>
             name: {file.name}
+            <hr />
+            <Grid container>
+              {
+                file?.exts?.map(ext => (
+                  <Grid key={ext} container item>
+                    <Link href={file[ext].html_url} target="_blank">
+                      {ext}
+                    </Link>
+                  </Grid>
+                ))
+              }
+            </Grid>
+            <hr />
             <Grid container>
               <Grid container item>
                 {
