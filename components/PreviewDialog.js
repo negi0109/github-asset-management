@@ -22,7 +22,7 @@ export default function PreviewDialog({ opened, file, onClose, blobs, setting, f
           alt={file.name}
           className="pixelated"
         />
-        <Grid container item flexDirection="column" xs={4}>
+        <Grid container item direction="column" xs={4}>
           <Container>
             name: {file.name}
             <Grid container>
@@ -77,7 +77,6 @@ export default function PreviewDialog({ opened, file, onClose, blobs, setting, f
                   if (setting.tagRelations[file.name] === undefined)
                     setting.tagRelations[file.name] = []
 
-                  console.log(setting)
                   setting.tagRelations[file.name] = setting.tagRelations[file.name].concat(id)
                   tag.name = "new tag"
                   tag.icon = _.sample(ICONS)
