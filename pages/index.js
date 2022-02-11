@@ -8,7 +8,9 @@ import useHash from '../hooks/useHash'
 import { getFile, getFiles, login, getBlob } from '../libs/github'
 import { ImageList, ImageListItem, ImageListItemBar, Drawer, AppBar, Toolbar, IconButton } from "@material-ui/core"
 import MenuIcon from "@mui/icons-material/Menu"
+import GithubIcon from "@mui/icons-material/Github"
 import PreviewDialog from "../components/PreviewDialog"
+import GithubTokenDialog from "../components/GithubTokenDialog"
 import SettingForm from "../components/SettingForm"
 import { DEFAULT_SETTING, importSetting } from "../libs/Setting"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -27,6 +29,7 @@ function Home() {
   const [blobs, setBlobs] = useState({})
   const [previewFile, setPreviewFile] = useState({})
   const [displayPreview, togglePreview] = useState(false)
+  const [tokenDialog, toggleTokenDialog] = useState(false)
 
   useEffect(() => {
     return (async() => {
@@ -120,6 +123,11 @@ function Home() {
         >
           <MenuIcon />
         </IconButton>
+        <IconButton
+          onClick={() => toggleTokenDialog(true)}
+        >
+          <GithubIcon />
+        </IconButton>
         <p>{ hash }</p>
       </Toolbar>
 
@@ -131,6 +139,13 @@ function Home() {
           forceUpdate={() => forceUpdate({})}
           blobs={blobs}
           setting={setting}
+        />
+
+        <GithubTokenDialog
+          opened={tokenDialog}
+          file={previewFile}
+          onClose={() => toggleTokenDialog(false)}
+          setGithubToken={setGithubToken}
         />
 
         <Drawer
