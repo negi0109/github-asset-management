@@ -1,5 +1,9 @@
+import React from "react"
 import AddIcon from "@mui/icons-material/Add"
 import { FormControl, Grid, Dialog, Container, TextField, Button, InputLabel, Select, MenuItem } from "@material-ui/core"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { ICONS } from "../libs/icon"
+import _ from "lodash"
 
 export default function PreviewDialog({ opened, file, onClose, blobs, setting, forceUpdate }) {
   return (
@@ -25,16 +29,21 @@ export default function PreviewDialog({ opened, file, onClose, blobs, setting, f
                   setting.tagRelations[file.name] !== undefined ?
                   (
                     setting.tagRelations[file.name].map(id => (
-                      <Grid key={id} item xs={12}>
-                        <TextField
-                          type="text"
-                          value={setting.tags[id].name}
-                          onChange={event => {
-                            setting.tags[id].name = event.target.value
-                            forceUpdate({})
-                          }}
-                        />
-                      </Grid>
+                      <>
+                        <Grid key={id} item xs={2}>
+                          <FontAwesomeIcon icon={setting.tags[id].icon} />
+                        </Grid>
+                        <Grid key={id} item xs={10}>
+                          <TextField
+                            type="text"
+                            value={setting.tags[id].name}
+                            onChange={event => {
+                              setting.tags[id].name = event.target.value
+                              forceUpdate({})
+                            }}
+                          />
+                        </Grid>
+                      </>
                     ))
                   ) : null
                 }
@@ -55,6 +64,7 @@ export default function PreviewDialog({ opened, file, onClose, blobs, setting, f
                   console.log(setting)
                   setting.tagRelations[file.name] = setting.tagRelations[file.name].concat(id)
                   tag.name = "new tag"
+                  tag.icon = _.sample(ICONS)
 
                   forceUpdate({})
                 }}
@@ -87,7 +97,11 @@ export default function PreviewDialog({ opened, file, onClose, blobs, setting, f
                   setting.tags !== undefined ?
                   (
                     Object.keys(setting.tags).filter(v => !setting?.tagRelations?.[file.name]?.includes(v)).map(id => (
-                      <MenuItem value={id} key={id}>{setting.tags[id].name}</MenuItem>
+                      <MenuItem value={id} key={id}>
+                        <FontAwesomeIcon icon={setting.tags[id].icon} />
+
+                        {setting.tags[id].name}
+                      </MenuItem>
                     ))
                   ) : null
                 }
