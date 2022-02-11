@@ -1,7 +1,7 @@
-import React from "react"
+import React, { Fragment } from "react"
 import AddIcon from "@mui/icons-material/Add"
 import { FormControl, Grid, Dialog, Container, TextField, Button, InputLabel, Select, MenuItem } from "@material-ui/core"
-import TagPicker from "../components/TagPicker"
+import IconPicker from "./IconPicker"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import CloseIcon from "@mui/icons-material/Close"
 import { ICONS } from "../libs/icon"
@@ -31,9 +31,9 @@ export default function PreviewDialog({ opened, file, onClose, blobs, setting, f
                   setting.tagRelations[file.name] !== undefined ?
                   (
                     setting.tagRelations[file.name].map(id => (
-                      <>
-                        <Grid key={id} item xs={2}>
-                          <TagPicker
+                      <Fragment key={id}>
+                        <Grid item xs={2}>
+                          <IconPicker
                             value={setting.tags[id].icon}
                             onChange={v => {
                               setting.tags[id].icon = v
@@ -41,7 +41,7 @@ export default function PreviewDialog({ opened, file, onClose, blobs, setting, f
                             }}
                           />
                         </Grid>
-                        <Grid key={id} item xs={9}>
+                        <Grid item xs={9}>
                           <TextField
                             type="text"
                             value={setting.tags[id].name}
@@ -51,7 +51,7 @@ export default function PreviewDialog({ opened, file, onClose, blobs, setting, f
                             }}
                           />
                         </Grid>
-                        <Grid key={id} item xs={1}>
+                        <Grid item xs={1}>
                           <CloseIcon
                             onClick={() => {
                               _.remove(setting.tagRelations[file.name], v => v == id)
@@ -59,7 +59,7 @@ export default function PreviewDialog({ opened, file, onClose, blobs, setting, f
                             }}
                           />
                         </Grid>
-                      </>
+                      </Fragment>
                     ))
                   ) : null
                 }

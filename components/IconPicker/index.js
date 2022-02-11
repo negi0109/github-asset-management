@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Grid, Dialog, DialogTitle, DialogContent } from "@material-ui/core"
 import { ICONS } from "../../libs/icon"
 
-export default function TagPicker({ value, onChange }) {
+export default function IconPicker({ value, onChange }) {
   const [opened, toggleOpened ] = useState(false)
 
   return (
@@ -24,14 +24,14 @@ export default function TagPicker({ value, onChange }) {
         <DialogContent dividers={scroll === 'paper'}>
           {
             ICONS.map(icon => (
-                <FontAwesomeIcon
-                  key={icon}
-                  icon={icon}
-                  onClick={_ => {
-                    toggleOpened(false)
-                    onChange(icon)
-                  }}
-                />
+              <FontAwesomeIcon
+                key={`${icon[0]}/${icon[1]}`}
+                icon={icon}
+                onClick={_ => {
+                  toggleOpened(false)
+                  onChange(icon)
+                }}
+              />
             ))
           }
         </DialogContent>
