@@ -8,7 +8,7 @@ import useHash from '../hooks/useHash'
 import { getFile, getFiles, login, getBlob } from '../libs/github'
 import { ImageList, ImageListItem, ImageListItemBar, Drawer, AppBar, Toolbar, IconButton } from "@material-ui/core"
 import MenuIcon from "@mui/icons-material/Menu"
-import GithubIcon from "@mui/icons-material/Github"
+import LockIcon from "@mui/icons-material/Lock"
 import PreviewDialog from "../components/PreviewDialog"
 import GithubTokenDialog from "../components/GithubTokenDialog"
 import SettingForm from "../components/SettingForm"
@@ -126,7 +126,7 @@ function Home() {
         <IconButton
           onClick={() => toggleTokenDialog(true)}
         >
-          <GithubIcon />
+          <LockIcon />
         </IconButton>
         <p>{ hash }</p>
       </Toolbar>

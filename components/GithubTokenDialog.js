@@ -19,7 +19,7 @@ export default function GithubTokenDialog({ opened, onClose, setGithubToken }) {
       <DialogTitle>Github Personal Access Token</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          ブラウザの<a href="">LocalStorage</a>上に保存されます
+          ブラウザのLocalStorage上に保存されます
         </DialogContentText>
         <TextField
           value={text}
