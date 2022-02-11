@@ -11,6 +11,7 @@ import MenuIcon from "@mui/icons-material/Menu"
 import PreviewDialog from "../components/PreviewDialog"
 import SettingForm from "../components/SettingForm"
 import { DEFAULT_SETTING, importSetting } from "../libs/Setting"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 
 function Home() {
@@ -177,6 +178,13 @@ function Home() {
                 forceUpdate()
               }}
             >
+              { setting.tagRelations[v.name]?.length > 0 ?
+                (<div className={styles.icons}>
+                  { setting.tagRelations[v.name].map(v => (
+                    <FontAwesomeIcon key={v.name} icon={setting.tags[v].icon}/>
+                  )) }
+                </div>) : null
+              }
               <img
                 src={`data:image/${v.prev};base64,${blobs[v[v.prev]?.sha]?.data?.content}`}
                 alt={v.name}
