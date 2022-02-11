@@ -10,7 +10,7 @@ export const DEFAULT_SETTING = () => ({
 })
 
 export function importSetting(hash) {
-  setting = Object.assign(
+  return Object.assign(
     DEFAULT_SETTING(),
     hash,
   )
