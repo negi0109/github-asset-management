@@ -20,6 +20,25 @@ export default function PreviewDialog({ opened, file, onClose, blobs, setting, f
           <Container>
             name: {file.name}
             <Grid container>
+              <Grid container item>
+                {
+                  setting.tagRelations[file.name] !== undefined ?
+                  (
+                    setting.tagRelations[file.name].map(id => (
+                      <Grid key={id} item xs={12}>
+                        <TextField
+                          type="text"
+                          value={setting.tags[id].name}
+                          onChange={event => {
+                            setting.tags[id].name = event.target.value
+                            forceUpdate({})
+                          }}
+                        />
+                      </Grid>
+                    ))
+                  ) : null
+                }
+              </Grid>
               <Button
                 onClick={() => {
                   console.log("add tag")
@@ -43,25 +62,6 @@ export default function PreviewDialog({ opened, file, onClose, blobs, setting, f
                 <AddIcon />
                 Add Tag
               </Button>
-              <Grid container item>
-                {
-                  setting.tagRelations[file.name] !== undefined ?
-                  (
-                    setting.tagRelations[file.name].map(id => (
-                      <Grid key={id} item xs={12}>
-                        <TextField
-                          type="text"
-                          value={setting.tags[id].name}
-                          onChange={event => {
-                            setting.tags[id].name = event.target.value
-                            forceUpdate({})
-                          }}
-                        />
-                      </Grid>
-                    ))
-                  ) : null
-                }
-              </Grid>
             </Grid>
             <FormControl fullWidth>
               <InputLabel id="new-tag">tag</InputLabel>
