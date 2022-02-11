@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { exportSetting } from "../libs/Setting"
-import { FormGroup, FormControl, FormLabel, FormControlLabel, Slider, Container, Checkbox, Grid } from "@material-ui/core"
+import { Select, FormGroup, FormControl, FormLabel, FormControlLabel, Slider, Container, Checkbox, Grid, MenuItem } from "@material-ui/core"
 
 export default function SettingForm({ setting, setSetting }) {
   const [previewSetting, togglePreviewSetting] = useState(false)
@@ -52,9 +52,22 @@ export default function SettingForm({ setting, setSetting }) {
       </Grid>
       {
         previewSetting ? (
-          <pre>
-            {JSON.stringify(exportSetting(setting), null, "\t")}
-          </pre>
+          <>
+            <Select
+                value={setting.stringifyFormat}
+                label="stringify-format"
+                onChange={ (event) => {
+                  setSetting({ ...setting, stringifyFormat: event.target.value })
+                } }
+              >
+                <MenuItem value={0}>compressed</MenuItem>
+                <MenuItem value="  ">space 2</MenuItem>
+                <MenuItem value={"\t"}>tab</MenuItem>
+              </Select>
+            <pre>
+              {JSON.stringify(exportSetting(setting), null, setting.stringifyFormat)}
+            </pre>
+          </>
         ) : null
       }
     </Container>
