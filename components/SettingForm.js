@@ -47,7 +47,7 @@ export default function SettingForm({ setting, setSetting }) {
                 }}
               />
             }
-            label="export setting"/>
+            label="export"/>
         </Grid>
       </Grid>
       {
