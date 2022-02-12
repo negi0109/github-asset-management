@@ -1,6 +1,9 @@
 import React, { useState } from "react"
 import { exportSetting } from "../libs/Setting"
 import { TextField, Select, FormGroup, FormControl, FormLabel, FormControlLabel, Slider, Container, Checkbox, Grid, MenuItem } from "@material-ui/core"
+import CloseIcon from "@mui/icons-material/Close"
+import AddIcon from "@mui/icons-material/Add"
+import { Stack } from "@mui/material"
 
 export default function SettingForm({ setting, setSetting }) {
   const [previewSetting, togglePreviewSetting] = useState(false)
@@ -19,6 +22,49 @@ export default function SettingForm({ setting, setSetting }) {
               setSetting({ ...setting, origin: event.target.value })
             }}
           />
+        </FormControl>
+      </FormGroup>
+      <FormGroup>
+        <FormControl variant="standard">
+          <Stack direction="row">
+            {
+              setting?.prevs != undefined ?
+              setting.prevs.map((k, i) =>
+                <>
+                  <TextField
+                    key={i}
+                    value={k}
+                    autoFocus
+                    margin="dense"
+                    label="prev ext"
+                    fullWidth
+                    onChange={event => {
+                      const v = event.target.value
+
+                      setSetting({
+                        ...setting,
+                        prevs:
+                          setting.prevs.map((prev, j) => j == i ? v : prev),
+                      })
+                    }}
+                  />
+                  <CloseIcon
+                    onClick={() => {
+                      setSetting({
+                        ...setting,
+                        prevs: setting.prevs.filter((_, j) => i != j),
+                      })
+                    }}
+                  />
+                </>
+              ) : null
+            }
+            <AddIcon
+              onClick={() => {
+                setSetting({ ...setting, prevs: setting.prevs.concat("") })
+              }}
+            />
+          </Stack>
         </FormControl>
       </FormGroup>
       <FormGroup>
