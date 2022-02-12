@@ -1,12 +1,26 @@
 import React, { useState } from "react"
 import { exportSetting } from "../libs/Setting"
-import { Select, FormGroup, FormControl, FormLabel, FormControlLabel, Slider, Container, Checkbox, Grid, MenuItem } from "@material-ui/core"
+import { TextField, Select, FormGroup, FormControl, FormLabel, FormControlLabel, Slider, Container, Checkbox, Grid, MenuItem } from "@material-ui/core"
 
 export default function SettingForm({ setting, setSetting }) {
   const [previewSetting, togglePreviewSetting] = useState(false)
 
   return (
     <Container>
+      <FormGroup>
+        <FormControl variant="standard">
+          <TextField
+            value={setting.origin}
+            autoFocus
+            margin="dense"
+            label="origin ext"
+            fullWidth
+            onChange={event => {
+              setSetting({ ...setting, origin: event.target.value })
+            }}
+          />
+        </FormControl>
+      </FormGroup>
       <FormGroup>
         <FormControl variant="standard">
           <FormLabel id="preview-columns">preview columns</FormLabel>
