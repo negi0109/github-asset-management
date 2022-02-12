@@ -30,6 +30,20 @@ export async function getFile(user, repo, path) {
   return file.data;
 }
 
+export function getBlobCache(user, repo, sha, blobs, afterGetBlob) {
+  if (sha == null) return null
+  else if (blobs[sha] === undefined) {
+    (async () => {
+      blobs[sha] = null;
+      const blob = await getBlob(user, repo, sha)
+      blobs[sha] = blob
+      afterGetBlob()
+    })()
+  } else {
+    return blobs[sha]
+  }
+}
+
 export async function getBlob(user, repo, sha) {
   const blob = await octokit.rest.git.getBlob({
     owner: user,

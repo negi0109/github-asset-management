@@ -5,7 +5,7 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import useLocalStorage from '../hooks/useLocalStorage'
 import useHash from '../hooks/useHash'
-import { getFile, getFiles, login, getBlob } from '../libs/github'
+import { getFile, getFiles, login, getBlob, getBlobCache } from '../libs/github'
 import { ImageList, ImageListItem, ImageListItemBar, Drawer, AppBar, Toolbar, IconButton } from "@material-ui/core"
 import MenuIcon from "@mui/icons-material/Menu"
 import LockIcon from "@mui/icons-material/Lock"
@@ -21,7 +21,6 @@ function Home() {
   const [username, setUserName] = useState("")
   const [githubToken, setGithubToken] = useLocalStorage("github-token")
   const [repos, setRepos] = useState([])
-  const [user, setUser] = useState([])
   const [hash, setHash] = useHash()
   const [setting, setSetting] = useState(DEFAULT_SETTING())
   const [fileHash, setFileHash] = useState({})
@@ -30,6 +29,7 @@ function Home() {
   const [previewFile, setPreviewFile] = useState({})
   const [displayPreview, togglePreview] = useState(false)
   const [tokenDialog, toggleTokenDialog] = useState(false)
+  const [user, repo] = hash?.split("/") ?? []
 
   useEffect(() => {
     return (async() => {
@@ -38,7 +38,6 @@ function Home() {
       const data = await login(githubToken)
 
       setRepos(data.repos.data)
-      setUser(data.user.data)
     })();
   }, [githubToken])
 
@@ -46,8 +45,6 @@ function Home() {
     return (async() => {
       if (hash == null) return;
       if (hash == "") return;
-
-      const [user, repo] = hash.split("/")
 
       var setting
 
@@ -93,24 +90,27 @@ function Home() {
 
         setFileHash(fileHash)
 
-        Promise.all(
-          response.data.map(async (v) => {
-            if (v.type != "file") return
-            if (![setting.origin, ...setting.prevs].includes(path.extname(v.name).substring(1))) return
-
-            if (blobs[v.sha] == undefined) {
-              blobs[v.sha] = await getBlob(user, repo, v.sha);
-              setBlobs(blobs)
-              forceUpdate({})
-            }
-          })
-        )
       } catch(error) {
         console.log("no files")
         console.error(error)
       }
     })();
   }, [githubToken, hash])
+
+  useEffect(() => {
+    Object.values(fileHash).forEach(v => {
+      v.prev = undefined
+
+      setting.prevs.some(ext => {
+        if (v[ext] != null) {
+          v.prev = ext
+          true
+        }
+      })
+    })
+    setFileHash(fileHash)
+    forceUpdate({})
+  }, [setting.prevs])
 
   return (
     <div className={`${styles.container} ${setting.pixelated ? "pixelated" : ""}`}>
@@ -204,7 +204,11 @@ function Home() {
                 </div>) : null
               }
               <img
-                src={`data:image/${v.prev};base64,${blobs[v[v.prev]?.sha]?.data?.content}`}
+                src={`data:image/${v.prev};base64,${
+                  v[v.prev]?.sha ?
+                    getBlobCache(user, repo, v[v.prev].sha, blobs, () => forceUpdate({}))?.data?.content
+                    : null
+                }`}
                 alt={v.name}
               />
               <ImageListItemBar
