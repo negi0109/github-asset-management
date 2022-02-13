@@ -186,7 +186,7 @@ function Home() {
         <ImageList variant="masonry" cols={setting.column} gap={4}>
         {
           Object.values(fileHash).filter(
-            v => v.exts.includes(setting.origin)
+            v => v.prev
           ).map(v => (
             <ImageListItem
               key={v.name}

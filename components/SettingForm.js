@@ -12,20 +12,6 @@ export default function SettingForm({ setting, setSetting }) {
     <Container>
       <FormGroup>
         <FormControl variant="standard">
-          <TextField
-            value={setting.origin}
-            autoFocus
-            margin="dense"
-            label="origin ext"
-            fullWidth
-            onChange={event => {
-              setSetting({ ...setting, origin: event.target.value })
-            }}
-          />
-        </FormControl>
-      </FormGroup>
-      <FormGroup>
-        <FormControl variant="standard">
           <Stack direction="row">
             {
               setting?.prevs != undefined ?

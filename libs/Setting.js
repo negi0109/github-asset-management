@@ -2,9 +2,7 @@ import _ from "lodash"
 
 export const DEFAULT_SETTING = () => ({
   paths: [""],
-  prevs:
-  ["png"],
-  origin: "png",
+  prevs: ["png"],
   column: 6,
   pixelated: true,
   stringifyFormat: "  ",
