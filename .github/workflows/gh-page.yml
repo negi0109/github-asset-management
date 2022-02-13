@@ -9,7 +9,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      NODE_ENV: production
+      ENV: gh-page
     steps:
       - uses: actions/checkout@v2
 

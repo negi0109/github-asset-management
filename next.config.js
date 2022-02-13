@@ -1,6 +1,4 @@
-const isProduction = process.env.NODE_ENV == "production"
-
 module.exports = {
   reactStrictMode: true,
-  basePath: isProduction ? "/github-asset-management" : null,
+  basePath: process.env.ENV == "gh-page" ? "/github-asset-management" : null,
 }
