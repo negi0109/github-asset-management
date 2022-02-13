@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, Fragment } from "react"
 import { exportSetting } from "../libs/Setting"
 import { TextField, Select, FormGroup, FormControl, FormLabel, FormControlLabel, Slider, Container, Checkbox, Grid, MenuItem } from "@material-ui/core"
 import CloseIcon from "@mui/icons-material/Close"
@@ -30,9 +30,8 @@ export default function SettingForm({ setting, setSetting }) {
             {
               setting?.prevs != undefined ?
               setting.prevs.map((k, i) =>
-                <>
+                <Fragment key={i}>
                   <TextField
-                    key={i}
                     value={k}
                     autoFocus
                     margin="dense"
@@ -56,7 +55,7 @@ export default function SettingForm({ setting, setSetting }) {
                       })
                     }}
                   />
-                </>
+                </Fragment>
               ) : null
             }
             <AddIcon
