@@ -114,9 +114,6 @@ function Home() {
 
   return (
     <div className={`${styles.container} ${setting.pixelated ? "pixelated" : ""}`}>
-      <Head>
-        <title>Github Asset Management</title>
-      </Head>
       <Toolbar>
         <IconButton
           onClick={() => toggleSideBar(true)}
