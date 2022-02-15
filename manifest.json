@@ -1,11 +1,11 @@
 {
-    "theme_color": "#f69435",
-    "background_color": "#f69435",
+    "theme_color": "#2b2d42",
+    "background_color": "#2b2d42",
     "display": "standalone",
     "scope": "/",
     "start_url": "/",
     "name": "github asset management",
-    "short_name": "github asset",
+    "short_name": "github-asset",
     "description": "test",
     "icons": [
         {
