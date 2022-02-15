@@ -9,7 +9,8 @@ function MyApp({ Component, pageProps }) {
     <>
       <Head>
         <title>Github Asset Management</title>
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="manifest" href="manifest.json" />
+        <link rel="shortcut icon" href="icons/favicon.ico" />
       </Head>
       <Component {...pageProps} />
     </>
