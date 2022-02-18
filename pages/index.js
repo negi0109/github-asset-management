@@ -12,6 +12,7 @@ import LockIcon from "@mui/icons-material/Lock"
 import PreviewDialog from "../components/PreviewDialog"
 import GithubTokenDialog from "../components/GithubTokenDialog"
 import SettingForm from "../components/SettingForm"
+import SideBar from "../components/SideBar"
 import { DEFAULT_SETTING, importSetting } from "../libs/Setting"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
@@ -145,25 +146,13 @@ function Home() {
           setGithubToken={setGithubToken}
         />
 
-        <Drawer
+        <SideBar
           anchor="left"
           open={sidebar}
-          onClose={() => toggleSideBar(false)}
-        >
-          {
-            repos.map(repo => (
-              <div key={repo.id} className={styles.repo}>
-                <a
-                  href={`#${repo.full_name}`}
-                  onClick={() => { setHash(repo.full_name); toggleSideBar(false) } }
-                >
-                  {repo.full_name}
-                </a>
-                <a href={`https://github.com/${repo.full_name}`}></a>
-              </div>
-            ))
-          }
-        </Drawer>
+          repos={repos}
+          toggleSideBar={toggleSideBar}
+          setHash={setHash}
+        />
 
         {hash == "" ? (<div className={styles.repos}>
           {
