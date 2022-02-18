@@ -33,14 +33,16 @@ export default function SettingForm({ setting, setSetting }) {
                       })
                     }}
                   />
-                  <CloseIcon
-                    onClick={() => {
-                      setSetting({
-                        ...setting,
-                        prevs: setting.prevs.filter((_, j) => i != j),
-                      })
-                    }}
-                  />
+                  {
+                    (setting?.prevs?.length > 1) && <CloseIcon
+                      onClick={() => {
+                        setSetting({
+                          ...setting,
+                          prevs: setting.prevs.filter((_, j) => i != j),
+                        })
+                      }}
+                    />
+                  }
                 </Fragment>
               ) : null
             }
