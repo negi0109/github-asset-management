@@ -25,7 +25,7 @@ export default function SideBar({ open, repos, setHash, toggleSideBar, favorites
           <List>
             {
               favorites?.map(repo => (
-                <ListItem key={repo.id} className={styles.repo}>
+                <ListItem key={repo} className={styles.repo}>
                   <a
                     href={`#${repo}`}
                     onClick={() => { setHash(repo); toggleSideBar(false) } }
