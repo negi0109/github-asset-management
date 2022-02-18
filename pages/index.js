@@ -9,6 +9,8 @@ import { getFile, getFiles, login, getBlob, getBlobCache } from '../libs/github'
 import { ImageList, ImageListItem, ImageListItemBar, Drawer, AppBar, Toolbar, IconButton } from "@material-ui/core"
 import MenuIcon from "@mui/icons-material/Menu"
 import LockIcon from "@mui/icons-material/Lock"
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import StarIcon from '@mui/icons-material/Star';
 import PreviewDialog from "../components/PreviewDialog"
 import GithubTokenDialog from "../components/GithubTokenDialog"
 import SettingForm from "../components/SettingForm"
@@ -31,6 +33,7 @@ function Home() {
   const [displayPreview, togglePreview] = useState(false)
   const [tokenDialog, toggleTokenDialog] = useState(false)
   const [user, repo] = hash?.split("/") ?? []
+  const [favorites, setFavorites] = useLocalStorage("favorites", [])
 
   useEffect(() => {
     return (async() => {
@@ -127,6 +130,23 @@ function Home() {
           <LockIcon />
         </IconButton>
         <p>{ hash }</p>
+        {
+          favorites?.includes(hash) ?
+          (
+            <IconButton
+              onClick={() => setFavorites(favorites.filter(v => v != hash))}
+            >
+              <StarIcon />
+            </IconButton>
+          )
+          : (
+            <IconButton
+              onClick={() => setFavorites(favorites.concat(hash))}
+            >
+              <StarBorderIcon />
+            </IconButton>
+          )
+        }
       </Toolbar>
 
       <main className={styles.main}>
@@ -152,6 +172,8 @@ function Home() {
           repos={repos}
           toggleSideBar={toggleSideBar}
           setHash={setHash}
+          favorites={favorites}
+          setFavorites={setFavorites}
         />
 
         {hash == "" ? (<div className={styles.repos}>
