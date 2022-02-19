@@ -5,7 +5,7 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import useLocalStorage from '../hooks/useLocalStorage'
 import useHash from '../hooks/useHash'
-import { getFile, getFiles, login, getBlob, getBlobCache } from '../libs/github'
+import { getFile, getFiles, login, getBlob, getBlobCache, getUser } from '../libs/github'
 import { ImageList, ImageListItem, ImageListItemBar, Drawer, AppBar, Toolbar, IconButton } from "@material-ui/core"
 import MenuIcon from "@mui/icons-material/Menu"
 import LockIcon from "@mui/icons-material/Lock"
@@ -32,14 +32,16 @@ function Home() {
   const [previewFile, setPreviewFile] = useState({})
   const [displayPreview, togglePreview] = useState(false)
   const [tokenDialog, toggleTokenDialog] = useState(false)
-  const [user, repo] = hash?.split("/") ?? []
   const [favorites, setFavorites] = useLocalStorage("favorites", [])
+
+  const [user, repo] = hash?.split("/") ?? []
 
   useEffect(() => {
     return (async() => {
       if(githubToken == null) return;
 
-      const data = await login(githubToken)
+      login(githubToken)
+      const data = await getUser()
 
       setRepos(data.repos.data)
     })();
@@ -190,6 +192,8 @@ function Home() {
         <SettingForm
           setting={setting}
           setSetting={setSetting}
+          hash={hash}
+          githubToken={githubToken}
         />
         <ImageList variant="masonry" cols={setting.column} gap={4}>
         {

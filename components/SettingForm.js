@@ -1,12 +1,44 @@
-import React, { useState, Fragment } from "react"
+import React, { useState, Fragment, useEffect } from "react"
 import { exportSetting } from "../libs/Setting"
-import { TextField, Select, FormGroup, FormControl, FormLabel, FormControlLabel, Slider, Container, Checkbox, Grid, MenuItem } from "@material-ui/core"
+import { saveSetting, getOctokit, login, getBlob, getBlobCache, getRepository, getRef } from '../libs/github'
+import {
+  Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,
+  Button, TextField, Select, FormGroup, FormControl, FormLabel, FormControlLabel,
+  Slider, Container, Checkbox, Grid, MenuItem,
+} from "@material-ui/core"
 import CloseIcon from "@mui/icons-material/Close"
 import AddIcon from "@mui/icons-material/Add"
 import { Stack } from "@mui/material"
 
-export default function SettingForm({ setting, setSetting }) {
+export default function SettingForm({ setting, setSetting, hash, githubToken }) {
   const [previewSetting, togglePreviewSetting] = useState(false)
+  const [repository, setRepository] = useState({})
+  const [currentCommitId, setCurrentCommitId] = useState("")
+  const [saveDialog, toggleSaveDialog] = useState(false)
+  const [commitMessage, setCommitMessage] = useState("Update .asset-management.json")
+  const [dialogMessage, setDialogMessage] = useState("")
+
+  const [user, repo] = hash?.split("/") ?? []
+
+  useEffect(() => {
+    (async() => {
+      if (hash == null) return;
+      if (hash == "") return;
+
+      login(githubToken)
+
+      const repository = await getRepository(user, repo);
+      const ref = await getRef(user, repo, `heads/${repository.default_branch}`)
+      const commitId = ref.object.sha
+
+      setRepository(repository)
+      setCurrentCommitId(commitId)
+    })()
+  }, [hash, githubToken])
+
+  useEffect(() => {
+    setDialogMessage("")
+  }, [saveDialog])
 
   return (
     <Container>
@@ -96,6 +128,18 @@ export default function SettingForm({ setting, setSetting }) {
             }
             label="export"/>
         </Grid>
+        <Grid item xs={3}>
+          <Button
+            color="primary"
+            onClick={
+              () => {
+                toggleSaveDialog(true)
+              }
+            }
+          >
+            Save
+          </Button>
+        </Grid>
       </Grid>
       {
         previewSetting ? (
@@ -117,6 +161,50 @@ export default function SettingForm({ setting, setSetting }) {
           </>
         ) : null
       }
+      <Dialog
+        open={saveDialog}
+        onClose={() => toggleSaveDialog(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Commit</DialogTitle>
+        <DialogContent>
+          {
+            (dialogMessage != "") &&
+            <DialogContentText>
+            {
+              dialogMessage
+            }
+            </DialogContentText>
+          }
+          <TextField
+            value={commitMessage}
+            autoFocus
+            margin="dense"
+            label="commitMessage"
+            fullWidth
+            onChange={(event) => {
+              setCommitMessage(event.target.value)
+            }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => toggleSaveDialog(false)}>Cancel</Button>
+          <Button
+            disabled={dialogMessage == "Succeed"}
+            onClick={() => {
+              saveSetting(
+                user, repo, repository.default_branch, exportSetting(setting), currentCommitId, commitMessage,
+                commitId => {
+                  setCurrentCommitId(commitId)
+                  setDialogMessage("Succeed")
+                },
+                message => { setDialogMessage(message) }
+              )
+            }}
+          >Commit</Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   )
 }
