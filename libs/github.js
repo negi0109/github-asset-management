@@ -9,24 +9,11 @@ export function login(token) {
   octokit = new Octokit({ auth: token });
 }
 
-export function getOctokit() {
-  return octokit;
-}
-
-
 export async function saveSetting(
   owner, repo, branch, setting, currentCommitId, commitMessage,
   onSucceed, onFailed
-){
-  const args = {
-    owner, repo, branch,
-    setting, currentCommitId,
-    onSucceed, onFailed,
-    octokit: getOctokit(),
-  }
+) {
   try {
-    console.log(args)
-
     const parent = await octokit.rest.git.getCommit({
       owner,
       repo,

@@ -1,6 +1,6 @@
 import React, { useState, Fragment, useEffect } from "react"
 import { exportSetting } from "../libs/Setting"
-import { saveSetting, getOctokit, login, getBlob, getBlobCache, getRepository, getRef } from '../libs/github'
+import { saveSetting, login, getRepository, getRef } from '../libs/github'
 import {
   Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,
   Button, TextField, Select, FormGroup, FormControl, FormLabel, FormControlLabel,
