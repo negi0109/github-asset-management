@@ -14,6 +14,7 @@ import StarIcon from '@mui/icons-material/Star';
 import PreviewDialog from "../components/PreviewDialog"
 import GithubTokenDialog from "../components/GithubTokenDialog"
 import SettingForm from "../components/SettingForm"
+import FilterForm, { DEFAULT_SETTING as FILTER_DEFAULT_SETTING } from "../components/FilterForm"
 import SideBar from "../components/SideBar"
 import { DEFAULT_SETTING, importSetting } from "../libs/Setting"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -33,6 +34,7 @@ function Home() {
   const [displayPreview, togglePreview] = useState(false)
   const [tokenDialog, toggleTokenDialog] = useState(false)
   const [favorites, setFavorites] = useLocalStorage("favorites", [])
+  const [filter, setFilter] = useState(FILTER_DEFAULT_SETTING)
 
   const [user, repo] = hash?.split("/") ?? []
 
@@ -118,6 +120,27 @@ function Home() {
     forceUpdate({})
   }, [setting.prevs])
 
+  useEffect(() => {
+    setFilter(FILTER_DEFAULT_SETTING)
+  }, [hash])
+
+  var files = Object.values(fileHash).filter(
+    v => v.prev
+  )
+  if (filter.includeTags?.length > 0)
+    files = files.filter(file =>
+      filter.includeTags.every(
+        v => setting.tagRelations[file.name]?.includes(v)
+      )
+    )
+
+  if (filter.excludeTags?.length > 0)
+    files = files.filter(file =>
+      !filter.excludeTags.some(
+        v => setting.tagRelations[file.name]?.includes(v)
+      )
+    )
+
   return (
     <div className={`${styles.container} ${setting.pixelated ? "pixelated" : ""}`}>
       <Toolbar>
@@ -195,11 +218,14 @@ function Home() {
           hash={hash}
           githubToken={githubToken}
         />
+        <FilterForm
+          filter={filter}
+          setFilter={setFilter}
+          setting={setting}
+        />
         <ImageList variant="masonry" cols={setting.column} gap={4}>
         {
-          Object.values(fileHash).filter(
-            v => v.prev
-          ).map(v => (
+          files.map(v => (
             <ImageListItem
               key={v.name}
               onClick={() => {
