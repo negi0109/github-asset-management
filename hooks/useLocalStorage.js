@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 export default function useLocalStorage(key, defaultValue = null) {
-    const [value, setValue] = useState(null);
+    const [value, setValue] = useState(defaultValue);
 
     useEffect(() => {
         var value = localStorage.getItem(key)

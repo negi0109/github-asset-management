@@ -6,7 +6,7 @@ import styles from '../styles/Home.module.css'
 import useLocalStorage from '../hooks/useLocalStorage'
 import useHash from '../hooks/useHash'
 import { getFile, getFiles, login, getBlob, getBlobCache, getUser } from '../libs/github'
-import { ImageList, ImageListItem, ImageListItemBar, Drawer, AppBar, Toolbar, IconButton } from "@material-ui/core"
+import { FormLabel, Container, Slider, ImageList, ImageListItem, ImageListItemBar, Drawer, AppBar, Toolbar, IconButton } from "@material-ui/core"
 import MenuIcon from "@mui/icons-material/Menu"
 import LockIcon from "@mui/icons-material/Lock"
 import StarBorderIcon from '@mui/icons-material/StarBorder';
@@ -35,6 +35,8 @@ function Home() {
   const [tokenDialog, toggleTokenDialog] = useState(false)
   const [favorites, setFavorites] = useLocalStorage("favorites", [])
   const [filter, setFilter] = useState(FILTER_DEFAULT_SETTING)
+  const [pageSetting, setPageSetting] = useLocalStorage("page-setting", { size: 30 })
+  const [page, setPage] = useState(0)
 
   const [user, repo] = hash?.split("/") ?? []
 
@@ -127,6 +129,7 @@ function Home() {
   var files = Object.values(fileHash).filter(
     v => v.prev
   )
+
   if (filter.includeTags?.length > 0)
     files = files.filter(file =>
       filter.includeTags.every(
@@ -140,6 +143,15 @@ function Home() {
         v => setting.tagRelations[file.name]?.includes(v)
       )
     )
+
+  const pages = Math.ceil(files.length / pageSetting.size)
+  useEffect(() => {
+    if (page == 0) return
+    if (pages == 0) setPage(0)
+    if (pages <= page) setPage(pages - 1)
+  }, [pages])
+
+  files = files.slice(page * pageSetting.size, (page + 1) * pageSetting.size)
 
   return (
     <div className={`${styles.container} ${setting.pixelated ? "pixelated" : ""}`}>
@@ -220,9 +232,44 @@ function Home() {
         />
         <FilterForm
           filter={filter}
-          setFilter={setFilter}
+          setFilter={filter => {
+            setFilter(filter)
+            setPage(0)
+          }}
           setting={setting}
         />
+        <Container>
+          <FormLabel>page size</FormLabel>
+          <Slider
+            aria-label="Temperature"
+            valueLabelDisplay="auto"
+            step={10}
+            min={10}
+            max={200}
+            marks
+            value={pageSetting.size}
+            onChange={(_, v) => {
+              setPageSetting({ ...pageSetting, size: v })
+            }}
+          />
+          {pages > 1 &&
+            <>
+              <FormLabel>page</FormLabel>
+              <Slider
+                aria-label="Temperature"
+                valueLabelDisplay="auto"
+                step={1}
+                min={0}
+                max={pages-1}
+                marks
+                value={page}
+                onChange={(_, v) => {
+                  setPage(v)
+                }}
+              />
+            </>
+          }
+        </Container>
         <ImageList variant="masonry" cols={setting.column} gap={4}>
         {
           files.map(v => (
